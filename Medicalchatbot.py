@@ -520,3 +520,71 @@ medical_db = {
     "fragile_x_syndrome": {
         "description": "Fragile X syndrome is a genetic condition causing intellectual disability.",
         "causes": ["FMR1 gene mutation"],
+# Common greetings and responses
+greetings = ["hello", "hi", "hey", "greetings"]
+farewells = ["bye", "goodbye", "see you", "exit"]
+thanks = ["thanks", "thank you", "appreciate it"]
+
+
+def get_response(user_input):
+    user_input = user_input.lower().strip()
+
+    # Check for greetings
+    if any(word in user_input for word in greetings):
+        return random.choice([
+            "Hello! I'm MediBot. How can I help you today?",
+            "Hi there! What health concerns do you have?",
+            "Greetings! I'm here to provide general health information."
+        ])
+
+    # Check for farewells
+    if any(word in user_input for word in farewells):
+        return random.choice([
+            "Take care and stay healthy!",
+            "Goodbye! Remember to consult a doctor for serious symptoms.",
+            "See you later! Wishing you good health."
+        ])
+
+    # Check for thanks
+    if any(word in user_input for word in thanks):
+        return random.choice([
+            "You're welcome!",
+            "Happy to help!",
+            "No problem! Stay healthy."
+        ])
+
+    # Check for conditions in the database
+    for condition, info in medical_db.items():
+        # Match both underscore and spaced versions
+        if condition in user_input or condition.replace("_", " ") in user_input:
+            response = f"About {condition.replace('_', ' ').title()}:\n"
+            response += f"Description: {info['description']}\n"
+            response += f"Possible causes: {', '.join(info['causes'])}\n"
+            response += f"Suggested remedies: {', '.join(info['remedies'])}\n"
+            response += "Note: If symptoms persist or worsen, please consult a doctor."
+            return response
+
+    # Default response if no matches found
+    return ("I'm sorry, I couldn't find information on that condition. "
+            "Please try a specific condition name such as 'headache', 'diabetes', or 'fever'. "
+            "For medical concerns, please consult a healthcare professional.")
+
+
+def main():
+    print("MediBot: Hello! I'm a simple medical chatbot providing general health information.")
+    print("Type 'bye' to exit at any time.\n")
+
+    while True:
+        user_input = input("You: ").strip()
+        if not user_input:
+            continue
+        if user_input.lower() in farewells:
+            print("MediBot:", get_response(user_input))
+            break
+        response = get_response(user_input)
+        print("MediBot:", response)
+        print()
+
+
+if __name__ == "__main__":
+    main()
